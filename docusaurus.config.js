@@ -11,15 +11,20 @@ const config = {
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
-  url: 'https://your-docusaurus-test-site.com',
+  url: 'https://jheron-circle.github.io',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/',
+  baseUrl: '/docs-spike/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'circlefin/jheron-circle', // Usually your GitHub org/user name.
-  projectName: 'docusaurus', // Usually your repo name.
+  organizationName: 'jheron-circle', // Usually your GitHub org/user name.
+  projectName: 'docs-spike', // Usually your repo name.
+
+  // Adding these based on docs: https://docusaurus.io/docs/deployment#deploying-to-github-pages
+  trailingSlash: false,
+  USE_SSH: true,
+  GIT_PASS: true,
 
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
