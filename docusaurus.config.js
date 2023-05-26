@@ -23,8 +23,10 @@ const config = {
 
   // Adding these based on docs: https://docusaurus.io/docs/deployment#deploying-to-github-pages
   trailingSlash: false,
-  USE_SSH: true,
-  GIT_PASS: true,
+
+// Apparently, these can't go here. Not going to add them to a customFields dictionary just yet.
+  // USE_SSH: true,
+  // GIT_PASS: true,
 
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
