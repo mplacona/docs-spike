@@ -1,0 +1,3357 @@
+basePath: /v1/w3s
+definitions:
+  AccelerateTransactionForEndUserRequest:
+    properties:
+      idempotencyKey:
+        description: IdempotencyKey is for idempotent retry on POST.
+        example: a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
+        format: uuid
+        type: string
+    required:
+    - idempotencyKey
+    type: object
+  AccelerateTransactionForEndUserResponse:
+    properties:
+      challengeId:
+        description: ChallengeID is the UUID for user challenge flow.
+        example: a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
+        format: uuid
+        type: string
+    type: object
+  CancelTransactionForEndUserRequest:
+    properties:
+      idempotencyKey:
+        description: IdempotencyKey is for idempotent retry on POST.
+        example: a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
+        format: uuid
+        type: string
+    required:
+    - idempotencyKey
+    type: object
+  CancelTransactionForEndUserResponse:
+    properties:
+      challengeId:
+        description: ChallengeID is the UUID for user challenge flow.
+        example: a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
+        format: uuid
+        type: string
+    type: object
+  Challenge:
+    properties:
+      correlationIds:
+        description: Correlation ID will be wallet id for type CREATE_WALLET and transaction
+          id for CREATE_TRANSACTION,ACCELERATE_TRANSACTION,CANCEL_TRANSACTION
+        example:
+        - 54399e5a-1bf6-4921-9559-10c1115678cd
+        items:
+          type: string
+        type: array
+      errorCode:
+        description: ErrorCode the error reason error code.
+        example: 155121
+        type: integer
+      errorMessage:
+        description: ErrorCode the error reason error message.
+        example: challenge expired
+        type: string
+      id:
+        description: ID is the unique identifier of the user
+        example: 54399e5a-1bf6-4921-9559-10c1115678cc
+        type: string
+      status:
+        allOf:
+        - $ref: '#/definitions/model.ChallengeStatus'
+        description: Status the challenge status
+        enum:
+        - PENDING
+        - IN_PROGRESS
+        example: PENDING
+      type:
+        allOf:
+        - $ref: '#/definitions/model.PinCodeType'
+        description: Type the challenge type
+        enum:
+        - SET_PIN
+        - RESTORE_PIN
+        - CHANGE_PIN
+        - SET_SECURITY_QUESTIONS
+        - CREATE_WALLET
+        - CREATE_TRANSACTION
+        - ACCELERATE_TRANSACTION
+        - CANCEL_TRANSACTION
+        example: SET_PIN
+    type: object
+  ContractExecutionTxnPinCodeRequest:
+    properties:
+      abiFunctionSignature:
+        description: AbiFunctionSignature is the contract abi function signature.
+          e.g. burn(uint256)
+        example: burn(uint256)
+        type: string
+      abiParameters:
+        description: AbiParameters is the contract interaction parameters when performing
+          contract interaction. e.g. ["100"].
+        example:
+        - '["100"]'
+        items:
+          type: string
+        type: array
+      contractAddress:
+        description: ContractAddress is the contract address of the execution
+        type: string
+      feeLevel:
+        allOf:
+        - $ref: '#/definitions/model.FeeLevel'
+        description: FeeLevel is the fee level. LOW / MEDIUM / HIGH - Defines the
+          blockchain fee level which will be paid for the transaction. Required, if
+          gasLimit, maxFee and priorityFee are not provided. See estimate transaction
+          fee API.
+        enum:
+        - LOW
+        - MEDIUM
+        - HIGH
+        example: LOW
+      gasLimit:
+        description: GasLimit is for EVM chains, the limit for how much can be used.
+          This is obtained from estimate transaction fee API.
+        example: "21000"
+        type: string
+      gasPrice:
+        description: GasPrice is for EIP-1559 non-support EVM chains only, e.g. Harmony.
+          This is obtained from estimate transaction fee API.
+        type: string
+      idempotencyKey:
+        description: IdempotencyKey is for idempotent retry on POST.
+        example: a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
+        format: uuid
+        type: string
+      maxFee:
+        description: MaxFee is the max fee of EVM according to EIP-1559. This is obtained
+          from estimate transaction fee API.
+        type: string
+      priorityFee:
+        description: PriorityFee is the priority fee of EVM according to EIP-1559.
+          This is obtained from estimate transaction fee API.
+        type: string
+      refId:
+        description: RefID is the refId to associate the transaction. This ref Id
+          will be a flexible field to support possible grouping that external endUser
+          wants to maintain.
+        type: string
+      walletId:
+        description: WalletID is the source wallet ID of the transaction.
+        example: a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
+        format: uuid
+        type: string
+    required:
+    - contractAddress
+    - idempotencyKey
+    - walletId
+    type: object
+  CreateContractExecutionTransactionForEndUserResponse:
+    properties:
+      challengeId:
+        description: ChallengeID is the UUID for user challenge flow.
+        example: a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
+        format: uuid
+        type: string
+    type: object
+  CreateDeveloperWalletRequest:
+    properties:
+      blockchains:
+        description: Blockchains are the blockchains the wallets will be created on.
+        example:
+        - '["ETH"]'
+        items:
+          $ref: '#/definitions/common.Blockchain'
+          enum:
+          - ETH
+          - AVAX
+          - MATIC
+        type: array
+      count:
+        default: 1
+        description: Count number of wallets to create
+        example: 2
+        maximum: 1
+        minimum: 1
+        type: integer
+      idempotencyKey:
+        description: IdempotencyKey is for idempotent retry on POST.
+        example: 3a375080-9da2-4bd8-b548-0de59c1471e9
+        format: uuid
+        type: string
+      metadata:
+        description: |-
+          Metadata is a list of metadataField fields that the client wants to set on the corresponding WalletResponse.
+          If specified, the length should match the count.
+        items:
+          $ref: '#/definitions/metadataField'
+        type: array
+      walletSetId:
+        description: WalletSetID is the id of the wallet set to create the wallets
+          under.
+        example: 71f2a6b4-ffa7-417a-ad5b-fb928753edc8
+        type: string
+    required:
+    - blockchains
+    - walletSetId
+    type: object
+  CreateDeveloperWalletResponse:
+    properties:
+      wallets:
+        description: Wallets are all the wallets that got created.
+        items:
+          $ref: '#/definitions/WalletResponse'
+        type: array
+    type: object
+  CreateDeveloperWalletSetRequest:
+    properties:
+      idempotencyKey:
+        example: 3a375080-9da2-4bd8-b548-0de59c1471e9
+        format: uuid
+        type: string
+      name:
+        example: treasury wallet set 1
+        type: string
+    required:
+    - idempotencyKey
+    type: object
+  CreateDeveloperWalletSetResponse:
+    properties:
+      walletSet:
+        $ref: '#/definitions/walletset.walletSetResponse'
+    type: object
+  CreateEndUserWalletRequest:
+    properties:
+      blockchains:
+        description: Blockchains are the blockchain the wallets will be created on.
+          If specified, “count” number of wallets will be created across all the blockchains
+          specified. Wallets will share the same address.
+        example:
+        - '["ETH"]'
+        items:
+          $ref: '#/definitions/common.Blockchain'
+          enum:
+          - ETH
+          - AVAX
+          - MATIC
+        type: array
+      count:
+        default: 1
+        description: Count number of wallets to create.
+        example: 1
+        maximum: 1
+        minimum: 1
+        type: integer
+      idempotencyKey:
+        description: IdempotencyKey is for idempotent retry on POST.
+        example: 3a375080-9da2-4bd8-b548-0de59c1471e9
+        type: string
+      metadata:
+        description: Metadata is a list of metadata fields that the client wants to
+          set on the corresponding wallet. Metadata will be same across blockchain
+          but can be different across wallets on the same chain
+        items:
+          $ref: '#/definitions/MetadataField'
+        type: array
+    required:
+    - blockchains
+    - idempotencyKey
+    type: object
+  CreateEndUserWalletResponse:
+    properties:
+      challengeId:
+        description: Create wallet in user wallet is an async flow and needs the user
+          to input PINCode.
+        example: 128c389c-6eb7-4c32-938b-0dd3486db01d
+        format: uuid
+        type: string
+    type: object
+  CreateTransferTransactionForEndUserRequest:
+    properties:
+      amounts:
+        description: Amounts is withdrawal amount in decimal number format, e.g. 6.62607015.
+        example:
+        - '["6.62607015"]'
+        items:
+          type: string
+        minItems: 1
+        type: array
+      destinationAddress:
+        description: DestinationAddress is the destination address of the transfer
+        type: string
+      feeLevel:
+        allOf:
+        - $ref: '#/definitions/model.FeeLevel'
+        description: FeeLevel is the fee level. LOW / MEDIUM / HIGH - Defines the
+          blockchain fee level which will be paid for the transaction. Required, if
+          gasLimit, maxFee and priorityFee are not provided. See estimate transaction
+          fee API.
+        enum:
+        - LOW
+        - MEDIUM
+        - HIGH
+        example: LOW
+      gasLimit:
+        description: GasLimit is for EVM chains, the limit for how much can be used.
+          This is obtained from estimate transaction fee API.
+        example: "21000"
+        type: string
+      gasPrice:
+        description: GasPrice is for EIP-1559 non-support EVM chains only, e.g. Harmony.
+          This is obtained from estimate transaction fee API.
+        type: string
+      idempotencyKey:
+        description: IdempotencyKey is for idempotent retry on POST.
+        example: a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
+        format: uuid
+        type: string
+      maxFee:
+        description: MaxFee is the max fee of EVM according to EIP-1559. This is obtained
+          from estimate transaction fee API.
+        type: string
+      nftTokenIds:
+        description: NftTokenIDs specify the nft ID list to be transferred/batchTransferred
+          for NFT withdrawal. Note. Only erc1155 supports safeBatchTransferFrom.
+        items:
+          type: string
+        type: array
+      priorityFee:
+        description: PriorityFee is the priority fee of EVM according to EIP-1559.
+          This is obtained from estimate transaction fee API.
+        type: string
+      refId:
+        description: RefID is the refId to associate the transaction. This ref Id
+          will be a flexible field to support possible grouping that external endUser
+          wants to maintain.
+        type: string
+      tokenId:
+        description: TokenID is the ID of the token.
+        example: a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
+        format: uuid
+        type: string
+      walletId:
+        description: WalletID is the source wallet ID of the transaction.
+        example: a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
+        format: uuid
+        type: string
+    required:
+    - destinationAddress
+    - idempotencyKey
+    - tokenId
+    - walletId
+    type: object
+  CreateTransferTransactionForEndUserResponse:
+    properties:
+      challengeId:
+        description: ChallengeID is the UUID for user challenge flow.
+        example: a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
+        format: uuid
+        type: string
+    type: object
+  CreateUserRequest:
+    properties:
+      userId:
+        description: ExternalUserID userId from external source
+        example: 3a375080-9da2-4bd8-b548-0de59c1471e9
+        format: uuid
+        maxLength: 50
+        minLength: 5
+        type: string
+    required:
+    - userId
+    type: object
+  DeleteMonitoredTokensRequest:
+    properties:
+      tokenIds:
+        description: TokenIds is the list of ids of tokens to be removed
+        example:
+        - a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
+        items:
+          format: uuid
+          type: string
+        minItems: 1
+        type: array
+    required:
+    - tokenIds
+    type: object
+  Error:
+    properties:
+      code:
+        description: Code is the error code
+        type: integer
+      message:
+        description: Message is the error message
+        type: string
+    type: object
+  GenerateUserTokenRequest:
+    properties:
+      userId:
+        example: 3a375080-9da2-4bd8-b548-0de59c1471e9
+        format: uuid
+        type: string
+    required:
+    - userId
+    type: object
+  GenerateUserTokenResponse:
+    properties:
+      secretKey:
+        description: SDK secret key
+        type: string
+      userToken:
+        description: user's JWT token
+        type: string
+    type: object
+  GetEndUserChallengeByIDResponse:
+    properties:
+      challenges:
+        allOf:
+        - $ref: '#/definitions/Challenge'
+        description: Challenges ...
+    type: object
+  GetEndUserChallengesResponse:
+    properties:
+      challenge:
+        description: Challenges ...
+        items:
+          $ref: '#/definitions/Challenge'
+        type: array
+    type: object
+  GetEndUserResponse:
+    properties:
+      createDate:
+        description: CreateDate the datetime that this user has been created.
+        example: "2023-01-01T12:04:05Z"
+        format: ISO-8601 UTC date/time
+        type: string
+      pin:
+        allOf:
+        - $ref: '#/definitions/enduser.PinStatus'
+        description: Pin user's security status
+      status:
+        allOf:
+        - $ref: '#/definitions/model.EndUserStatus'
+        description: Status the status of this user
+        enum:
+        - DISABLED
+        - ENABLED
+        example: ENABLED
+      userId:
+        description: UserID is the unique identifier of the user
+        example: 54399e5a-1bf6-4921-9559-10c1115678cc
+        format: uuid
+        type: string
+    type: object
+  GetMonitoredTokensResponse:
+    properties:
+      scope:
+        allOf:
+        - $ref: '#/definitions/model.TokenMonitorScope'
+        description: Scope represents whether all tokens are monitored or only the
+          selected ones
+        example: SELECTED
+      tokens:
+        description: Tokens is the list of tokens to be monitored
+        items:
+          $ref: '#/definitions/model.Token'
+        type: array
+    type: object
+  GetNftsResponse:
+    properties:
+      nfts:
+        description: Nfts is the list of NFTs
+        items:
+          $ref: '#/definitions/Nft'
+        type: array
+    type: object
+  GetWalletSetByIDResponse:
+    properties:
+      walletSet:
+        $ref: '#/definitions/walletset.walletSetResponse'
+    type: object
+  GetWalletSetsResponse:
+    properties:
+      walletSets:
+        items:
+          $ref: '#/definitions/walletset.walletSetResponse'
+        type: array
+    type: object
+  MetadataField:
+    properties:
+      name:
+        description: Name for ALL the wallets created. If specified, The length should
+          match the count.
+        example: My walletResponse
+        type: string
+      refId:
+        description: RefID will be a flexible field to support possible grouping that
+          external developer wants to maintain. If metadata is specified, its length
+          needs to match the count field.
+        example: abc123
+        type: string
+    type: object
+  Nft:
+    properties:
+      amount:
+        description: The amount of the NFTs on target wallet. For non-fungible token
+          standards like ERC721, it will always be “1”; for semi-fungible token standards
+          like ERC1155, it will be the amount of tokens
+        example: "1"
+        type: string
+      metadata:
+        description: Metadata is the metadata of the NFT
+        type: string
+      nftTokenId:
+        description: NFT token ID
+        type: string
+      token:
+        allOf:
+        - $ref: '#/definitions/model.Token'
+        description: Token is the token information of the NFT
+      updateDate:
+        description: UpdateDate is the date that info has been updated
+        example: "2023-01-01T12:04:05Z"
+        format: ISO-8601 UTC date/time
+        type: string
+    type: object
+  PostMonitoredTokensRequest:
+    properties:
+      tokenIds:
+        description: / TokenIds is the list of ids of tokens to be monitored
+        example:
+        - a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
+        items:
+          format: uuid
+          type: string
+        minItems: 1
+        type: array
+    required:
+    - tokenIds
+    type: object
+  PostMonitoredTokensResponse:
+    properties:
+      scope:
+        allOf:
+        - $ref: '#/definitions/model.TokenMonitorScope'
+        description: Scope represents whether all tokens are monitored or only the
+          selected ones
+        example: SELECTED
+      tokens:
+        description: Tokens is the list of tokens to be monitored
+        items:
+          $ref: '#/definitions/model.Token'
+        type: array
+    type: object
+  PutMonitoredTokensRequest:
+    properties:
+      tokenIds:
+        description: / TokenIds is the list of ids of tokens to be monitored
+        example:
+        - a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
+        items:
+          format: uuid
+          type: string
+        type: array
+    type: object
+  PutMonitoredTokensResponse:
+    properties:
+      scope:
+        allOf:
+        - $ref: '#/definitions/model.TokenMonitorScope'
+        description: Scope represents whether all tokens are monitored or only the
+          selected ones
+        example: SELECTED
+      tokens:
+        description: Tokens is the list of tokens to be monitored
+        items:
+          $ref: '#/definitions/model.Token'
+        type: array
+    type: object
+  PutMonitoredTokensScopeRequest:
+    properties:
+      scope:
+        allOf:
+        - $ref: '#/definitions/model.TokenMonitorScope'
+        description: Scope represents whether all tokens are monitored or only the
+          selected ones
+        enum:
+        - SELECTED
+        - MONITOR_ALL
+        example: SELECTED
+    required:
+    - scope
+    type: object
+  Transaction:
+    properties:
+      abiFunctionSignature:
+        description: AbiFunctionSignature is the contract abi function signature.
+          e.g. burn(uint256)
+        example: burn(uint256)
+        type: string
+      abiParameters:
+        description: AbiParameters is the contract interaction parameters when performing
+          contract interaction. e.g. ["100"].
+        items:
+          type: string
+        type: array
+      amounts:
+        description: Amounts is transaction amount in decimal number format, e.g.
+          6.62607015.
+        example:
+        - '["6.62607015"]'
+        items:
+          type: string
+        type: array
+      blockHash:
+        description: Block hash that the transaction is included in.
+        type: string
+      blockHeight:
+        description: Block height of the transaction.
+        type: integer
+      blockchain:
+        allOf:
+        - $ref: '#/definitions/common.Blockchain'
+        description: Blockchain of the transaction e.g. ETH
+        enum:
+        - ETH
+        - AVAX
+        - MATIC
+        example: ETH
+      contractAddress:
+        description: The contract address of the execution.
+        type: string
+      createDate:
+        description: CreateDate is the date the transaction was created.
+        example: "2021-05-18T00:00:00Z"
+        format: ISO-8601 UTC date/time
+        type: string
+      custodyType:
+        allOf:
+        - $ref: '#/definitions/common.CustodyType'
+        description: CustodyType is the custody type of the transaction.
+        enum:
+        - DEVELOPER
+        - ENDUSER
+      destinationAddress:
+        description: The destination address of the transfer.
+        type: string
+      errorReason:
+        description: ErrorReason is the reason for transaction error
+        type: string
+      estimatedFee:
+        allOf:
+        - $ref: '#/definitions/model.EstimatedTransactionFee'
+        description: EstimatedFee is the estimated fee for the transaction.
+      feeLevel:
+        allOf:
+        - $ref: '#/definitions/model.FeeLevel'
+        description: Defines the blockchain fee level which will be paid for the transaction
+          e.g. LOW, MEDIUM, HIGH
+        enum:
+        - LOW
+        - MEDIUM
+        - HIGH
+      firstConfirmDate:
+        description: FirstConfirmedDate is the date the transaction was first confirmed.
+        example: "2021-05-18T00:00:00Z"
+        format: ISO-8601 UTC date/time
+        type: string
+      id:
+        description: The unique identifier of the transaction.
+        example: a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
+        format: uuid
+        type: string
+      networkFee:
+        description: The fee paid to the network
+        type: string
+      nfts:
+        description: Nfts is the list of Nfts in the form of a json string associated
+          with the transaction.
+        example:
+        - '["{"ntfTokenId":"12322"'
+        - '"metadata":{"name":"Azuki #1495"'
+        - '"image":"ipfs://QmYDvPAXtiJg7s8JdRBSLWdgSphQdac8j1YuQNNxcGE1hg/1495.png"'
+        - '"attributes":[{"trait_type":"Background"'
+        - '"value":"Off White A"}]}}"'
+        - '"another"]'
+        items:
+          type: string
+        type: array
+      operation:
+        allOf:
+        - $ref: '#/definitions/model.Operation'
+        description: Operation of the transaction. e.g. TRANSFER, CONTRACT_EXECUTION
+        enum:
+        - TRANSFER
+        - CONTRACT_EXECUTION
+      refId:
+        description: RefID is the reference id of the transaction.
+        type: string
+      sourceAddress:
+        description: The source address of the transaction.
+        type: string
+      state:
+        allOf:
+        - $ref: '#/definitions/model.TransactionState'
+        description: State is the state of the transaction e.g. COMPLETED
+        enum:
+        - INITIATED
+        - QUEUED
+        - SENT
+        - CONFIRMED
+        - COMPLETED
+        - FAILED
+      tokenId:
+        description: The token id associated with the transaction.
+        format: uuid
+        type: string
+      transactionType:
+        allOf:
+        - $ref: '#/definitions/model.TransactionType'
+        description: TransactionType is the type of transaction. e.g. INBOUND, OUTBOUND
+        enum:
+        - INBOUND
+        - OUTBOUND
+        example: INBOUND
+      txHash:
+        description: Transaction hash of the transaction.
+        type: string
+      updateDate:
+        description: UpdateDate is the date the transaction was last updated.
+        example: "2021-05-18T00:00:00Z"
+        format: ISO-8601 UTC date/time
+        type: string
+      walletId:
+        description: WalletID is the source wallet ID of the transaction.
+        example: a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
+        format: uuid
+        type: string
+    type: object
+  UpdateWalletSetMetadataRequest:
+    properties:
+      name:
+        example: My updated wallet set name
+        minLength: 1
+        type: string
+    type: object
+  UpdateWalletSetMetadataResponse:
+    properties:
+      walletSet:
+        $ref: '#/definitions/walletset.walletSetResponse'
+    type: object
+  WalletResponse:
+    properties:
+      address:
+        description: Address is the blockaddress of the WalletResponse
+        type: string
+      addressIndex:
+        description: AddressIndex is the address index of the WalletResponse
+        type: integer
+      blockchain:
+        allOf:
+        - $ref: '#/definitions/common.Blockchain'
+        description: Blockchain is the blockchain the WalletResponse is created on
+        enum:
+        - ETH
+        - AVAX
+        - MATIC
+        example: ETH
+      createDate:
+        description: CreateDate is the created date of the WalletResponse
+        example: "2023-01-01T12:04:05Z"
+        format: ISO-8601 UTC date/time
+        type: string
+      custodyType:
+        allOf:
+        - $ref: '#/definitions/common.CustodyType'
+        description: CustodyType is the custody type of the WalletResponse
+        enum:
+        - DEVELOPER
+        - ENDUSER
+        example: DEVELOPER
+      id:
+        description: ID is the unique identifier of the WalletResponse
+        example: c4d1da72-111e-4d52-bdbf-2e74a2d803d5
+        format: uuid
+        type: string
+      name:
+        description: Name is the name of the WalletResponse
+        example: My WalletResponse
+        type: string
+      refId:
+        description: RefID is an optional field that can be used to group wallets.
+        example: abc123
+        type: string
+      state:
+        allOf:
+        - $ref: '#/definitions/model.WalletState'
+        description: State is the state of the WalletResponse
+        enum:
+        - LIVE
+        - FROZEN
+        example: LIVE
+      updateDate:
+        description: UpdateDate is the last updated date of the WalletResponse
+        example: "2023-01-01T12:04:05Z"
+        format: ISO-8601 UTC date/time
+        type: string
+      userId:
+        description: UserID is the unique identifier of the user
+        example: 54399e5a-1bf6-4921-9559-10c1115678cc
+        format: uuid
+        type: string
+      walletSetId:
+        description: WalletSetID is the unique identifier of the WalletResponse set
+          that the WalletResponse belongs to
+        example: 3a375080-9da2-4bd8-b548-0de59c1471e9
+        format: uuid
+        type: string
+    type: object
+  accelerateTransactionForDeveloperRequest:
+    properties:
+      idempotencyKey:
+        description: IdempotencyKey is for idempotent retry on POST.
+        example: a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
+        format: uuid
+        type: string
+    required:
+    - idempotencyKey
+    type: object
+  accelerateTransactionForDeveloperResponse:
+    properties:
+      transaction:
+        $ref: '#/definitions/Transaction'
+    type: object
+  balances.ExtBalance:
+    properties:
+      amount:
+        description: The amount of token on address in decimal number in string format,
+          e.g. “6.62607015”
+        example: "6.62607015"
+        type: string
+      token:
+        allOf:
+        - $ref: '#/definitions/model.Token'
+        description: Token object
+      unconfirmedBalance:
+        description: The unconfirmed balance of token
+        example: "6.62607015"
+        type: string
+      updateDate:
+        description: UpdateDate is the date that the balance is obtained
+        example: "2023-01-01T12:04:05Z"
+        format: ISO-8601 UTC date/time
+        type: string
+    type: object
+  balances.ExtGetBalancesResponse:
+    properties:
+      tokenBalances:
+        description: TokenBalances is the list of token balances
+        items:
+          $ref: '#/definitions/balances.ExtBalance'
+        type: array
+    type: object
+  cancelTransactionForDeveloperRequest:
+    properties:
+      idempotencyKey:
+        description: IdempotencyKey is for idempotent retry on POST.
+        example: a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
+        format: uuid
+        type: string
+    required:
+    - idempotencyKey
+    type: object
+  cancelTransactionForDeveloperResponse:
+    properties:
+      transaction:
+        $ref: '#/definitions/Transaction'
+    type: object
+  common.Blockchain:
+    enum:
+    - ETH
+    - AVAX
+    - MATIC
+    type: string
+    x-enum-varnames:
+    - BlockchainEthereum
+    - BlockchainAvalanche
+    - BlockchainPolygon
+  common.CustodyType:
+    enum:
+    - DEVELOPER
+    - ENDUSER
+    type: string
+    x-enum-varnames:
+    - DeveloperWallet
+    - EndUserWallet
+  createContractExecutionTransactionForDeveloperRequest:
+    properties:
+      abiFunctionSignature:
+        description: AbiFunctionSignature is the contract abi function signature.
+          e.g. burn(uint256)
+        example: burn(uint256)
+        type: string
+      abiParameters:
+        description: AbiParameters is the contract interaction parameters when performing
+          contract interaction. e.g. ["100"].
+        example:
+        - '["100"]'
+        items:
+          type: string
+        type: array
+      autoAccelerate:
+        default: false
+        description: 'AutoAccelerate enable the Auto acceleration mechanism to raise
+          fee and resend transaction, Default: false.'
+        type: boolean
+      contractAddress:
+        description: ContractAddress is the contract address for execution.
+        type: string
+      feeLevel:
+        allOf:
+        - $ref: '#/definitions/model.FeeLevel'
+        description: FeeLevel is the fee level. LOW / MEDIUM / HIGH - Defines the
+          blockchain fee level which will be paid for the transaction. Required, if
+          gasLimit, maxFee and priorityFee are not provided. See estimate transaction
+          fee API.
+        enum:
+        - LOW
+        - MEDIUM
+        - HIGH
+        example: LOW
+      gasLimit:
+        description: GasLimit is for EVM chains, the limit for how much can be used.
+          This is obtained from estimate transaction fee API.
+        example: "21000"
+        type: string
+      gasPrice:
+        description: GasPrice is for EIP-1559 non-support EVM chains only, e.g. Harmony.
+          This is obtained from estimate transaction fee API.
+        type: string
+      idempotencyKey:
+        description: IdempotencyKey is for idempotent retry on POST.
+        example: a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
+        format: uuid
+        type: string
+      maxFee:
+        description: MaxFee is the max fee of EVM according to EIP-1559. This is obtained
+          from estimate transaction fee API.
+        type: string
+      priorityFee:
+        description: PriorityFee is the priority fee of EVM according to EIP-1559.
+          This is obtained from estimate transaction fee API.
+        type: string
+      refId:
+        description: RefID is the refId to associate the transaction. This ref Id
+          will be a flexible field to support possible grouping that external endUser
+          wants to maintain.
+        type: string
+      walletId:
+        description: WalletID is the source wallet ID of the transaction.
+        example: a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
+        format: uuid
+        type: string
+    required:
+    - contractAddress
+    - idempotencyKey
+    - walletId
+    type: object
+  createContractExecutionTransactionForDeveloperResponse:
+    properties:
+      id:
+        description: ID is the UUID of the transaction
+        type: string
+      state:
+        allOf:
+        - $ref: '#/definitions/model.TransactionState'
+        description: State is the state of the transaction
+    type: object
+  createTransferTransactionForDeveloperRequest:
+    properties:
+      amounts:
+        description: Amounts is withdrawal amount in decimal number format, e.g. 6.62607015.
+        example:
+        - '["6.62607015"]'
+        items:
+          type: string
+        minItems: 1
+        type: array
+      autoAccelerate:
+        default: false
+        description: 'AutoAccelerate enable the Auto acceleration mechanism to raise
+          fee and resend transaction, Default: false.'
+        type: boolean
+      destinationAddress:
+        description: DestinationAddress is the destination address for transfer.
+        type: string
+      feeLevel:
+        allOf:
+        - $ref: '#/definitions/model.FeeLevel'
+        description: FeeLevel is the fee level. LOW / MEDIUM / HIGH - Defines the
+          blockchain fee level which will be paid for the transaction. Required, if
+          gasLimit, maxFee and priorityFee are not provided. See estimate transaction
+          fee API.
+        enum:
+        - LOW
+        - MEDIUM
+        - HIGH
+        example: LOW
+      gasLimit:
+        description: GasLimit is for EVM chains, the limit for how much can be used.
+          This is obtained from estimate transaction fee API.
+        example: "21000"
+        type: string
+      gasPrice:
+        description: GasPrice is for EIP-1559 non-support EVM chains only, e.g. Harmony.
+          This is obtained from estimate transaction fee API.
+        type: string
+      idempotencyKey:
+        description: IdempotencyKey is for idempotent retry on POST.
+        example: a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
+        format: uuid
+        type: string
+      maxFee:
+        description: MaxFee is the max fee of EVM according to EIP-1559. This is obtained
+          from estimate transaction fee API.
+        type: string
+      nftTokenIds:
+        description: NftTokenIDs specify the nft ID list to be transferred/batchTransferred
+          for NFT withdrawal. Note. Only erc1155 supports safeBatchTransferFrom.
+        items:
+          type: string
+        type: array
+      priorityFee:
+        description: PriorityFee is the priority fee of EVM according to EIP-1559.
+          This is obtained from estimate transaction fee API.
+        type: string
+      refId:
+        description: RefID is the refId to associate the transaction. This ref Id
+          will be a flexible field to support possible grouping that external endUser
+          wants to maintain.
+        type: string
+      tokenId:
+        description: TokenID is the ID of the token.
+        example: a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
+        format: uuid
+        type: string
+      walletId:
+        description: WalletID is the source wallet ID of the transaction.
+        example: a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
+        format: uuid
+        type: string
+    required:
+    - destinationAddress
+    - idempotencyKey
+    - tokenId
+    - walletId
+    type: object
+  createTransferTransactionForDeveloperResponse:
+    properties:
+      id:
+        description: ID is the UUID of the transaction
+        type: string
+      state:
+        allOf:
+        - $ref: '#/definitions/model.TransactionState'
+        description: State is the state of the transaction
+    type: object
+  enduser.PinStatus:
+    properties:
+      failedAnswerAttempts:
+        type: integer
+      failedAtAttemps:
+        type: integer
+      lockedAnswerDate:
+        type: string
+      lockedAnswerExpiryDate:
+        type: string
+      lockedDate:
+        type: string
+      lockedExpiryDate:
+        type: string
+      pinStatus:
+        $ref: '#/definitions/model.PinCodeStatus'
+      setSecurityQuestionStatus:
+        $ref: '#/definitions/model.PinSecurityQuestionsStatus'
+      unlockedAnswerDate:
+        type: string
+      unlockedDate:
+        type: string
+    type: object
+  estimateContractExecutionTransactionFeeRequest:
+    properties:
+      abiFunctionSignature:
+        description: AbiFunctionSignature is the contract abi function signature.
+          e.g. burn(uint256)
+        example: burn(uint256)
+        type: string
+      abiParameters:
+        description: AbiParameters is the contract interaction parameters when performing
+          contract interaction. e.g. ["100"].
+        example:
+        - '["100"]'
+        items:
+          type: string
+        type: array
+      blockchain:
+        allOf:
+        - $ref: '#/definitions/common.Blockchain'
+        description: Blockchain of the transaction. Required, if walletId is not provided
+        enum:
+        - ETH
+        - AVAX
+        - MATIC
+        example: ETH
+      contractAddress:
+        description: ContractAddress is the contract address for execution.
+        type: string
+      walletId:
+        description: WalletID is the source wallet ID of the transaction.
+        example: a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
+        format: uuid
+        type: string
+    required:
+    - abiFunctionSignature
+    - abiParameters
+    - contractAddress
+    type: object
+  estimateTransactionFeeResponse:
+    properties:
+      high:
+        $ref: '#/definitions/model.EstimatedTransactionFee'
+      low:
+        $ref: '#/definitions/model.EstimatedTransactionFee'
+      medium:
+        $ref: '#/definitions/model.EstimatedTransactionFee'
+    type: object
+  extChangePinRequest:
+    properties:
+      idempotencyKey:
+        description: IdempotencyKey is for idempotent retry on PUT.
+        example: a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
+        format: uuid
+        type: string
+    required:
+    - idempotencyKey
+    type: object
+  extChangePinResponse:
+    properties:
+      challengeId:
+        description: ChallengeID is the UUID for user challenge flow.
+        example: a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
+        format: uuid
+        type: string
+    required:
+    - challengeId
+    type: object
+  extRestorePinRequest:
+    properties:
+      idempotencyKey:
+        description: IdempotencyKey is for idempotent retry on POST.
+        example: a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
+        format: uuid
+        type: string
+    required:
+    - idempotencyKey
+    type: object
+  extRestorePinResponse:
+    properties:
+      challengeId:
+        description: ChallengeID is the UUID for user challenge flow.
+        example: a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
+        format: uuid
+        type: string
+    required:
+    - challengeId
+    type: object
+  extSetPinRequest:
+    properties:
+      idempotencyKey:
+        description: IdempotencyKey is for idempotent retry on POST.
+        example: a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
+        format: uuid
+        type: string
+    required:
+    - idempotencyKey
+    type: object
+  extSetPinResponse:
+    properties:
+      challengeId:
+        description: ChallengeID is the UUID for user challenge flow.
+        example: a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
+        format: uuid
+        type: string
+    required:
+    - challengeId
+    type: object
+  metadataField:
+    properties:
+      name:
+        description: Name for ALL the wallets created.
+        example: My WalletResponse
+        type: string
+      refId:
+        description: RefID support possible grouping that external wants to maintain.
+        example: abc123
+        type: string
+    type: object
+  model.ChallengeStatus:
+    enum:
+    - PENDING
+    - IN_PROGRESS
+    - COMPLETE
+    - FAILED
+    - UNKNOWN
+    - EXPIRED
+    type: string
+    x-enum-comments:
+      ChallengeComplete: ChallengeComplete ...
+      ChallengeExpired: ChallengeExpired ...
+      ChallengeFailed: ChallengeFailed ...
+      ChallengeInProgress: ChallengeInProgress ...
+      ChallengePending: ChallengePending ...
+      ChallengeUnknown: ChallengeUnknown ...
+    x-enum-varnames:
+    - ChallengePending
+    - ChallengeInProgress
+    - ChallengeComplete
+    - ChallengeFailed
+    - ChallengeUnknown
+    - ChallengeExpired
+  model.EndUserStatus:
+    enum:
+    - ENABLED
+    - DISABLED
+    type: string
+    x-enum-comments:
+      EndUserStatusDisabled: EndUserStatusDisabled ...
+      EndUserStatusEnabled: EndUserStatusEnabled ...
+    x-enum-varnames:
+    - EndUserStatusEnabled
+    - EndUserStatusDisabled
+  model.EstimatedTransactionFee:
+    properties:
+      base_fee:
+        type: string
+      gas_limit:
+        type: string
+      gas_price:
+        type: string
+      max_fee:
+        type: string
+      priority_fee:
+        type: string
+    type: object
+  model.FeeLevel:
+    enum:
+    - LOW
+    - MEDIUM
+    - HIGH
+    type: string
+    x-enum-comments:
+      FeeLevelHigh: FeeLevelHigh is the high level of fee
+      FeeLevelLow: FeeLevelLow is the low level of fee
+      FeeLevelMedium: FeeLevelMedium is the meduim level of fee
+    x-enum-varnames:
+    - FeeLevelLow
+    - FeeLevelMedium
+    - FeeLevelHigh
+  model.Operation:
+    enum:
+    - TRANSFER
+    - CONTRACT_EXECUTION
+    - CONTRACT_DEPLOYMENT
+    type: string
+    x-enum-varnames:
+    - OperationTransfer
+    - OperationContractExecution
+    - OperationContractDeployment
+  model.PinCodeStatus:
+    enum:
+    - ENABLED
+    - UNSET
+    - LOCKED
+    type: string
+    x-enum-comments:
+      PinCodeEnabled: PinCodeEnabled ...
+      PinCodeLocked: PinCodeLocked ...
+      PinCodeUnset: PinCodeUnset ...
+    x-enum-varnames:
+    - PinCodeEnabled
+    - PinCodeUnset
+    - PinCodeLocked
+  model.PinCodeType:
+    enum:
+    - ""
+    - INITIALIZE
+    - SET_PIN
+    - CHANGE_PIN
+    - SET_SECURITY_QUESTIONS
+    - CREATE_WALLET
+    - RESTORE_PIN
+    - CREATE_TRANSACTION
+    - ACCELERATE_TRANSACTION
+    - CANCEL_TRANSACTION
+    - CONTRACT_EXECUTION
+    type: string
+    x-enum-comments:
+      PinCodeTypeAccelerateTransaction: PinCodeTypeAccelerateTransaction ...
+      PinCodeTypeCancelTransaction: PinCodeTypeCancelTransaction ...
+      PinCodeTypeChangePin: PinCodeTypeChangePin ...
+      PinCodeTypeContractExecution: PinCodeTypeContractExecution ...
+      PinCodeTypeCreateTransaction: PinCodeTypeCreateTransaction ...
+      PinCodeTypeCreateWallet: PinCodeTypeCreateWallet ...
+      PinCodeTypeInitialize: PinCodeTypeInitialize ...
+      PinCodeTypeRestorePIN: PinCodeTypeRestorePIN ...
+      PinCodeTypeSetPin: PinCodeTypeSetPin ...
+      PinCodeTypeSetSecurityQuestion: PinCodeTypeSetSecurityQuestion ...
+      PinCodeTypeUnknown: PinCodeTypeUnknown ...
+    x-enum-varnames:
+    - PinCodeTypeUnknown
+    - PinCodeTypeInitialize
+    - PinCodeTypeSetPin
+    - PinCodeTypeChangePin
+    - PinCodeTypeSetSecurityQuestion
+    - PinCodeTypeCreateWallet
+    - PinCodeTypeRestorePIN
+    - PinCodeTypeCreateTransaction
+    - PinCodeTypeAccelerateTransaction
+    - PinCodeTypeCancelTransaction
+    - PinCodeTypeContractExecution
+  model.PinSecurityQuestionsStatus:
+    enum:
+    - ENABLED
+    - UNSET
+    - LOCKED
+    type: string
+    x-enum-comments:
+      PinSecurityQuestionsEnabled: PinSecurityQuestionsEnabled ...
+      PinSecurityQuestionsLocked: PinSecurityQuestionsLocked ...
+      PinSecurityQuestionsUnset: PinSecurityQuestionsUnset ...
+    x-enum-varnames:
+    - PinSecurityQuestionsEnabled
+    - PinSecurityQuestionsUnset
+    - PinSecurityQuestionsLocked
+  model.Token:
+    properties:
+      abi:
+        type: string
+      blockchain:
+        $ref: '#/definitions/common.Blockchain'
+      createDate:
+        description: CreateDate is when this model was created.
+        type: string
+      decimals:
+        type: integer
+      id:
+        description: ID is a unique identifier for the model.
+        type: string
+      isNative:
+        type: boolean
+      name:
+        type: string
+      standards:
+        $ref: '#/definitions/model.TokenStandard'
+      symbol:
+        type: string
+      tokenAddress:
+        type: string
+      updateDate:
+        description: UpdateDate is when this model was last updated.
+        type: string
+    type: object
+  model.TokenMonitorScope:
+    enum:
+    - SELECTED
+    - MONITOR_ALL
+    type: string
+    x-enum-varnames:
+    - Selected
+    - MonitorAll
+  model.TokenStandard:
+    enum:
+    - ERC20
+    - ERC721
+    - ERC1155
+    type: string
+    x-enum-varnames:
+    - ERC20
+    - ERC721
+    - ERC1155
+  model.TransactionState:
+    enum:
+    - INITIATED
+    - QUEUED
+    - SENT
+    - CONFIRMED
+    - COMPLETED
+    - FAILED
+    - CANCELLED
+    type: string
+    x-enum-varnames:
+    - TransactionStateInitiated
+    - TransactionStateQueued
+    - TransactionStateSent
+    - TransactionStateConfirmed
+    - TransactionStateCompleted
+    - TransactionStateFailed
+    - TransactionStateCancelled
+  model.TransactionType:
+    enum:
+    - INBOUND
+    - OUTBOUND
+    type: string
+    x-enum-varnames:
+    - TransactionTypeInbound
+    - TransactionTypeOutbound
+  model.Wallet:
+    properties:
+      address:
+        type: string
+      addressIndex:
+        description: AddressIndex is the HD key index associated with the address
+        type: integer
+      blockchain:
+        $ref: '#/definitions/common.Blockchain'
+      createDate:
+        description: CreateDate is when this model was created.
+        type: string
+      custodyType:
+        $ref: '#/definitions/common.CustodyType'
+      entityID:
+        type: string
+      id:
+        description: ID is a unique identifier for the model.
+        type: string
+      name:
+        type: string
+      nonce:
+        description: Careful, use nonce+1 for new transaction and remember to pump
+          this
+        type: integer
+      refID:
+        description: RefID is the external defined metadata field of a wallet.
+        type: string
+      state:
+        $ref: '#/definitions/model.WalletState'
+      updateDate:
+        description: UpdateDate is when this model was last updated.
+        type: string
+      userID:
+        type: string
+      walletSetID:
+        type: string
+    type: object
+  model.WalletState:
+    enum:
+    - LIVE
+    - FROZEN
+    type: string
+    x-enum-varnames:
+    - LIVE
+    - FROZEN
+  token.GetTokenByIDResponse:
+    properties:
+      token:
+        $ref: '#/definitions/model.Token'
+    type: object
+  transaction.EstimateTransferTransactionFeeRequest:
+    properties:
+      amounts:
+        description: Amounts is withdrawal amount in decimal number format, e.g. 6.62607015.
+        example:
+        - '["6.62607015"]'
+        items:
+          type: string
+        type: array
+      destinationAddress:
+        description: DestinationAddress is the destination address.
+        type: string
+      nftTokenIds:
+        description: NftTokenIDs specify the nft ID list to be transferred/batchTransferred
+          for NFT withdrawal. Note. Only erc1155 supports safeBatchTransferFrom.
+        items:
+          type: string
+        type: array
+      tokenId:
+        description: TokenID is the ID of the token.
+        example: a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
+        format: uuid
+        type: string
+      walletId:
+        description: WalletID is the source wallet ID of the transaction.
+        example: a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
+        format: uuid
+        type: string
+    required:
+    - amounts
+    - destinationAddress
+    - tokenId
+    type: object
+  transaction.getTransactionByIDResponse:
+    properties:
+      transaction:
+        $ref: '#/definitions/Transaction'
+    type: object
+  transaction.getTransactionsResponse:
+    properties:
+      transactions:
+        items:
+          $ref: '#/definitions/Transaction'
+        type: array
+    type: object
+  transaction.validateAddressRequest:
+    properties:
+      address:
+        type: string
+      tokenId:
+        example: a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
+        format: uuid
+        type: string
+    required:
+    - address
+    - tokenId
+    type: object
+  transaction.validateAddressResponse:
+    properties:
+      isValid:
+        type: boolean
+    type: object
+  wallet.GetAllWalletsResponse:
+    properties:
+      links:
+        type: string
+      wallets:
+        items:
+          $ref: '#/definitions/model.Wallet'
+        type: array
+    type: object
+  wallet.GetWalletByIDResponse:
+    properties:
+      wallet:
+        $ref: '#/definitions/model.Wallet'
+    type: object
+  wallet.UpdateWalletMetadataRequest:
+    properties:
+      entityID:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      refID:
+        type: string
+      userID:
+        type: string
+    type: object
+  wallet.UpdateWalletMetadataResponse:
+    properties:
+      wallet:
+        $ref: '#/definitions/model.Wallet'
+    type: object
+  wallet.UpdateWalletStateRequest:
+    properties:
+      entityID:
+        type: string
+      id:
+        type: string
+      state:
+        $ref: '#/definitions/model.WalletState'
+      userID:
+        type: string
+    type: object
+  walletset.walletSetResponse:
+    properties:
+      createDate:
+        description: CreateDate is the creation date of the wallet set
+        example: "2023-01-01T12:04:05Z"
+        format: ISO-8601 UTC date/time
+        type: string
+      custodyType:
+        allOf:
+        - $ref: '#/definitions/common.CustodyType'
+        description: CustodyType is the custody type of the wallet set
+        enum:
+        - DEVELOPER
+        - ENDUSER
+        example: DEVELOPER
+      id:
+        description: ID is the unique identifier of the wallet set
+        example: 1321eedc-4ba5-4897-8f13-896d2859d612
+        format: uuid
+        type: string
+      name:
+        description: Name is the name of the wallet set
+        example: treasury wallet set 1
+        type: string
+      updateDate:
+        description: UpdateDate is the last update date of the wallet set
+        example: "2023-01-01T12:04:05Z"
+        format: ISO-8601 UTC date/time
+        type: string
+      userId:
+        description: UserID is the unique identifier of the user
+        example: 3a375080-9da2-4bd8-b548-0de59c1471e9
+        format: uuid
+        type: string
+    type: object
+host: api-sandbox.circle.com
+info:
+  contact: {}
+  description: This is the Programmable-wallet API documentation.
+  title: Programmable-wallet API
+  version: "1.0"
+paths:
+  /config/entity/monitoredTokens:
+    get:
+      description: Get entity monitored tokens
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/GetMonitoredTokensResponse'
+        default:
+          description: Error response
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - bearerAuth: []
+      summary: Get entity monitored tokens
+      tags:
+      - TokenConfig
+    post:
+      consumes:
+      - application/json
+      description: Add tokens to the monitored tokens list
+      parameters:
+      - description: Request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/PostMonitoredTokensRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success response
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/PostMonitoredTokensResponse'
+        "201":
+          description: Update success response
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/PostMonitoredTokensResponse'
+        default:
+          description: Error response
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - bearerAuth: []
+      summary: Add monitored tokens
+      tags:
+      - TokenConfig
+    put:
+      consumes:
+      - application/json
+      description: Replace entity monitored token list
+      parameters:
+      - description: Request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/PutMonitoredTokensRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success response
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/PutMonitoredTokensResponse'
+        default:
+          description: Error response
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - bearerAuth: []
+      summary: Replace entity monitored token list
+      tags:
+      - TokenConfig
+  /config/entity/monitoredTokens/delete:
+    post:
+      consumes:
+      - application/json
+      description: Delete tokens from the monitored tokens list
+      parameters:
+      - description: Request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/DeleteMonitoredTokensRequest'
+      responses:
+        "200":
+          description: Success response
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+        default:
+          description: Error response
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - bearerAuth: []
+      summary: Delete monitored tokens
+      tags:
+      - TokenConfig
+  /config/entity/monitoredTokens/scope:
+    put:
+      consumes:
+      - application/json
+      description: Update entity monitored tokens scope
+      parameters:
+      - description: Request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/PutMonitoredTokensScopeRequest'
+      responses:
+        "200":
+          description: Success response
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+        default:
+          description: Error response
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - bearerAuth: []
+      summary: Update entity monitored tokens scope
+      tags:
+      - TokenConfig
+  /developer/transactions/{id}/accelerate:
+    post:
+      consumes:
+      - application/json
+      description: Accelerate a transaction for developer
+      parameters:
+      - description: Transaction ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Accelerate transaction for developer request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/accelerateTransactionForDeveloperRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Transaction accelerated
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/accelerateTransactionForDeveloperResponse'
+        default:
+          description: Error response
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - bearerAuth: []
+      summary: Accelerate a transaction for developer
+      tags:
+      - Transaction
+  /developer/transactions/{id}/cancel:
+    post:
+      consumes:
+      - application/json
+      description: Cancel a transaction for developer
+      parameters:
+      - description: Transaction ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Cancel transaction for developer request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/cancelTransactionForDeveloperRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Transaction canceled
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/cancelTransactionForDeveloperResponse'
+        default:
+          description: Error response
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - bearerAuth: []
+      summary: Cancel a transaction for developer
+      tags:
+      - Transaction
+  /developer/transactions/contractExecution:
+    post:
+      consumes:
+      - application/json
+      description: Create a contract execution transaction for developer
+      parameters:
+      - description: Create transaction for developer request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/createContractExecutionTransactionForDeveloperRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/createContractExecutionTransactionForDeveloperResponse'
+        default:
+          description: Error response
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - bearerAuth: []
+      summary: Create a contract execution transaction for developer
+      tags:
+      - Transaction
+  /developer/transactions/transfer:
+    post:
+      consumes:
+      - application/json
+      description: Create a transfer transaction for developer
+      parameters:
+      - description: Create transaction for developer request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/createTransferTransactionForDeveloperRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/createTransferTransactionForDeveloperResponse'
+        default:
+          description: Error response
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - bearerAuth: []
+      summary: Create a transfer transaction for developer
+      tags:
+      - Transaction
+  /developer/walletSets:
+    post:
+      consumes:
+      - application/json
+      description: Create a new developer walletSet for a given entity
+      parameters:
+      - description: WalletSet creation request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/CreateDeveloperWalletSetRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: WalletSet already exists
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/CreateDeveloperWalletSetResponse'
+        "201":
+          description: WalletSet created
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/CreateDeveloperWalletSetResponse'
+        default:
+          description: Error response
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - bearerAuth: []
+      summary: Create a new developer walletSet
+      tags:
+      - WalletSet
+  /developer/walletSets/{id}:
+    put:
+      consumes:
+      - application/json
+      description: Update a developer walletSet metadata by ID belonging to the entity
+      parameters:
+      - description: WalletSet ID
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Update walletSet metadata request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/UpdateWalletSetMetadataRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: WalletSet metadata updated
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/UpdateWalletSetMetadataResponse'
+        default:
+          description: Error response
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - bearerAuth: []
+      summary: Update a developer walletSet metadata by ID
+      tags:
+      - WalletSet
+  /developer/wallets:
+    post:
+      consumes:
+      - application/json
+      description: Create a batch of developer wallets and the corresponding wallet
+        set from API Key in a synchronous request
+      parameters:
+      - description: Wallets creation request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/CreateDeveloperWalletRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Wallets created
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/CreateDeveloperWalletResponse'
+        default:
+          description: Error response
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - bearerAuth: []
+      summary: Create a batch of wallets
+      tags:
+      - Wallet
+  /tokens/{id}:
+    get:
+      description: Get a token by its ID
+      parameters:
+      - description: Token ID
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Token found
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/token.GetTokenByIDResponse'
+        default:
+          description: Error response
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - bearerAuth: []
+      summary: Get token by ID
+      tags:
+      - Token
+  /transactions:
+    get:
+      description: Get all transactions
+      parameters:
+      - description: User token
+        in: header
+        name: X-User-Token
+        type: string
+      - description: Name of the blockchain
+        enum:
+        - ETH
+        - AVAX
+        - MATIC
+        in: query
+        name: Blockchain
+        type: string
+      - collectionFormat: csv
+        description: Wallet id list
+        format: uuid
+        in: query
+        items:
+          type: string
+        name: walletIds
+        type: array
+      - description: Transaction state
+        enum:
+        - initiated
+        - queued
+        - sent
+        - confirmed
+        - completed
+        - failed
+        - cancelled
+        in: query
+        name: state
+        type: string
+      - description: Destination address
+        in: query
+        name: destinationAddress
+        type: string
+      - description: Include all transactions
+        in: query
+        name: includeAll
+        type: boolean
+      - in: query
+        name: from
+        type: string
+      - in: query
+        name: pageAfter
+        type: string
+      - in: query
+        name: pageBefore
+        type: string
+      - in: query
+        name: pageSize
+        type: integer
+      - in: query
+        name: to
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Transactions retrieved
+          headers:
+            Link:
+              description: 'Pagination cursor information. format: <https://api.circle.com/v1/developer/walletSets?to=2020-06-02T12:01:00Z&pageSize=50>;
+                rel=\"next\'
+              type: string
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/transaction.getTransactionsResponse'
+        default:
+          description: Error response
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - bearerAuth: []
+      summary: Get transactions
+      tags:
+      - Transaction
+  /transactions/{id}:
+    get:
+      description: Get transaction by id
+      parameters:
+      - description: User token
+        in: header
+        name: X-User-Token
+        type: string
+      - description: Transaction id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Transaction retrieved
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/transaction.getTransactionByIDResponse'
+        default:
+          description: Error response
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - bearerAuth: []
+      summary: Get transaction by id
+      tags:
+      - Transaction
+  /transactions/contractExecution/estimateFee:
+    post:
+      consumes:
+      - application/json
+      description: Estimate transaction fee for contract execution transaction
+      parameters:
+      - description: Estimate transaction fee request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/estimateContractExecutionTransactionFeeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Transaction fee estimated
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/estimateTransactionFeeResponse'
+        default:
+          description: Error response
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - bearerAuth: []
+      summary: Estimate transaction fee for a contract execution transaction
+      tags:
+      - Transaction
+  /transactions/transfer/estimateFee:
+    post:
+      consumes:
+      - application/json
+      description: Estimate transaction fee for transfer transaction
+      parameters:
+      - description: Estimate transaction fee request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/transaction.EstimateTransferTransactionFeeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Transaction fee estimated
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/estimateTransactionFeeResponse'
+        default:
+          description: Error response
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - bearerAuth: []
+      summary: Estimate transaction fee for a transfer transaction
+      tags:
+      - Transaction
+  /transactions/validateAddress:
+    post:
+      description: Validate address
+      parameters:
+      - description: Validate address request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/transaction.validateAddressRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Address validated
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/transaction.validateAddressResponse'
+        default:
+          description: Error response
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - bearerAuth: []
+      summary: Validate address
+      tags:
+      - Transaction
+  /user:
+    get:
+      description: Get end user
+      parameters:
+      - description: User token
+        in: header
+        name: X-User-Token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success response
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/GetEndUserResponse'
+        default:
+          description: Error response
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - bearerAuth: []
+      summary: Get end user
+      tags:
+      - User
+  /user/challenges:
+    get:
+      description: Get the user’s challenge list by the status
+      parameters:
+      - description: User token
+        in: header
+        name: X-User-Token
+        required: true
+        type: string
+      - description: Challenge status to query
+        enum:
+        - PENDING
+        - IN_PROGRESS
+        in: query
+        name: status
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success response
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/GetEndUserChallengesResponse'
+        default:
+          description: Error response
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - bearerAuth: []
+      summary: Get user challenge by status
+      tags:
+      - User
+  /user/challenges/{id}:
+    get:
+      description: Get the user’s challenge by id
+      parameters:
+      - description: User token
+        in: header
+        name: X-User-Token
+        required: true
+        type: string
+      - description: Challenge id to query
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success response
+          headers:
+            X-Request-Id:
+              description: Universally unique identifier for the request" format(uuid)
+              type: string
+          schema:
+            $ref: '#/definitions/GetEndUserChallengeByIDResponse'
+        default:
+          description: Error response
+          headers:
+            X-Request-Id:
+              description: Universally unique identifier for the request" format(uuid)
+              type: string
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - bearerAuth: []
+      summary: Get user challenges by id
+      tags:
+      - User
+  /user/initialize:
+    post:
+      consumes:
+      - application/json
+      description: Set the user’s pin code, and set security questions, and create
+        default wallets
+      parameters:
+      - description: User token
+        in: header
+        name: X-User-Token
+        required: true
+        type: string
+      - description: Request body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/extSetPinRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success response
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/extSetPinResponse'
+        default:
+          description: Error response
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - bearerAuth: []
+      summary: Set user's pin code, include create wallet for new user
+      tags:
+      - Pin
+  /user/pin:
+    post:
+      consumes:
+      - application/json
+      description: Set the user’s pin code, and set security questions
+      parameters:
+      - description: User token
+        in: header
+        name: X-User-Token
+        required: true
+        type: string
+      - description: Request body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/extSetPinRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success response
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/extSetPinResponse'
+        default:
+          description: Error response
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - bearerAuth: []
+      summary: Set user's pin code
+      tags:
+      - Pin
+    put:
+      consumes:
+      - application/json
+      description: Used for resetting the user pin.
+      parameters:
+      - description: User token
+        in: header
+        name: X-User-Token
+        required: true
+        type: string
+      - description: Request body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/extChangePinRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success response
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/extChangePinResponse'
+        default:
+          description: Error response
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - bearerAuth: []
+      summary: Change user's pin code
+      tags:
+      - Pin
+  /user/pin/restore:
+    post:
+      consumes:
+      - application/json
+      description: Use security questions and answers to restore wallets.
+      parameters:
+      - description: User token
+        in: header
+        name: X-User-Token
+        required: true
+        type: string
+      - description: Request body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/extRestorePinRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success response
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/extRestorePinResponse'
+        default:
+          description: Error response
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - bearerAuth: []
+      summary: Restore user's pin code
+      tags:
+      - Pin
+  /user/transactions/{id}/accelerate:
+    post:
+      consumes:
+      - application/json
+      description: Accelerate a transaction for end user
+      parameters:
+      - description: User token
+        in: header
+        name: X-User-Token
+        required: true
+        type: string
+      - description: Transaction ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Accelerate transaction for end user request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/AccelerateTransactionForEndUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Transaction accelerated
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/AccelerateTransactionForEndUserResponse'
+        default:
+          description: Error response
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - bearerAuth: []
+      summary: Accelerate a transaction for end user
+      tags:
+      - Transaction
+  /user/transactions/{id}/cancel:
+    post:
+      consumes:
+      - application/json
+      description: Cancel a transaction for end user
+      parameters:
+      - description: User token
+        in: header
+        name: X-User-Token
+        required: true
+        type: string
+      - description: Transaction ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Cancel transaction for end user request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/CancelTransactionForEndUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Transaction canceled
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/CancelTransactionForEndUserResponse'
+        default:
+          description: Error response
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - bearerAuth: []
+      summary: Cancel a transaction for end user
+      tags:
+      - Transaction
+  /user/transactions/contractExecution:
+    post:
+      consumes:
+      - application/json
+      description: Create a contract execution transaction for end user
+      parameters:
+      - description: User token
+        in: header
+        name: X-User-Token
+        required: true
+        type: string
+      - description: Create transaction for end user request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/ContractExecutionTxnPinCodeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/CreateContractExecutionTransactionForEndUserResponse'
+        default:
+          description: Error response
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - bearerAuth: []
+      summary: Create a contract execution transaction for end user
+      tags:
+      - Transaction
+  /user/transactions/transfer:
+    post:
+      consumes:
+      - application/json
+      description: Create a transfer transaction for end user
+      parameters:
+      - description: User token
+        in: header
+        name: X-User-Token
+        required: true
+        type: string
+      - description: Create transaction for end user request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/CreateTransferTransactionForEndUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/CreateTransferTransactionForEndUserResponse'
+        default:
+          description: Error response
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - bearerAuth: []
+      summary: Create a transfer transaction for end user
+      tags:
+      - Transaction
+  /user/wallets:
+    post:
+      consumes:
+      - application/json
+      description: Create a batch of wallets and the corresponding wallet set for
+        the user in a multi-phased way. This API will immediately return a challenge
+        id for security purposes.
+      parameters:
+      - description: User token
+        in: header
+        name: X-User-Token
+        required: true
+        type: string
+      - description: walletResponse creation request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/CreateEndUserWalletRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: walletResponse already exists
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/CreateEndUserWalletResponse'
+        default:
+          description: Error response
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - bearerAuth: []
+      summary: Create a batch of wallets for user
+      tags:
+      - Wallet
+  /users:
+    post:
+      consumes:
+      - application/json
+      description: Create end user
+      parameters:
+      - description: Request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/CreateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success response
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+        default:
+          description: Error response
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - bearerAuth: []
+      summary: Create a new user
+      tags:
+      - User
+  /users/token:
+    post:
+      consumes:
+      - application/json
+      description: Generates the user’s JWT token if there is no existing token for
+        the user or the existing token has expired
+      parameters:
+      - description: Request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/GenerateUserTokenRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success response
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/GenerateUserTokenResponse'
+        default:
+          description: Error response
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - bearerAuth: []
+      summary: Generate user jwt token
+      tags:
+      - User
+  /walletSets:
+    get:
+      description: Get all walletSets belonging to the entity
+      parameters:
+      - description: User token
+        in: header
+        name: X-User-Token
+        type: string
+      - in: query
+        name: from
+        type: string
+      - in: query
+        name: pageAfter
+        type: string
+      - in: query
+        name: pageBefore
+        type: string
+      - in: query
+        name: pageSize
+        type: integer
+      - in: query
+        name: to
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: WalletSets found
+          headers:
+            Link:
+              description: 'Pagination cursor information, it can have four links
+                depending on the page: self, first, next and prev. format: <https://api.circle.com/w3s/walletSets?to=2020-06-02T12:01:00Z&pageSize=50>;
+                rel=\"next\'
+              type: string
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/GetWalletSetsResponse'
+        default:
+          description: Error response
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - bearerAuth: []
+      summary: Get all walletSets
+      tags:
+      - WalletSet
+  /walletSets/{id}:
+    get:
+      description: Get a walletSet by ID belonging to the entity
+      parameters:
+      - description: User token
+        in: header
+        name: X-User-Token
+        type: string
+      - description: WalletSet ID
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: WalletSet found
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/GetWalletSetByIDResponse'
+        default:
+          description: Error response
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - bearerAuth: []
+      summary: Get a walletSet by ID
+      tags:
+      - WalletSet
+  /wallets/:
+    get:
+      consumes:
+      - application/json
+      description: Get all wallets owned by the a user or entity, sorted by the create
+        date DESC order
+      parameters:
+      - description: User token
+        in: header
+        name: X-User-Token
+        type: string
+      - description: Address is the blockaddress of the WalletResponse, need to be
+          used with blockchain
+        in: query
+        name: address
+        type: string
+      - description: Blockchain is the blockchain the WalletResponse is created on
+        enum:
+        - ETH
+        - AVAX
+        - MATIC
+        in: query
+        name: blockchain
+        type: string
+        x-enum-varnames:
+        - BlockchainEthereum
+        - BlockchainAvalanche
+        - BlockchainPolygon
+      - description: From is the start time of the query, inclusive
+        format: "2023-01-01T12:04:05Z"
+        in: query
+        name: from
+        type: string
+      - description: PageAfter is used to return items after the given item exclusively.
+          SHOULD NOT be used in conjunction with pageBefore
+        format: uuid
+        in: query
+        name: pageAfter
+        type: string
+      - description: PageBefore is used to return items before the given item exclusively.
+          SHOULD NOT be used in conjunction with pageAfter
+        format: uuid
+        in: query
+        name: pageBefore
+        type: string
+      - default: 10
+        description: PageSize is the number of items to return
+        in: query
+        maximum: 50
+        minimum: 1
+        name: pageSize
+        type: integer
+      - description: To is the end time of the query, inclusive, default to current
+          time
+        format: "2023-01-01T12:04:05Z"
+        in: query
+        name: to
+        type: string
+      - description: WalletSetID is the unique identifier of the WalletResponse set
+        format: uuid
+        in: query
+        name: walletSetId
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Wallets found
+          headers:
+            Link:
+              description: 'Pagination cursor information, it can have four links
+                depending on the page: self, first, next and prev. format: <https://api.circle.com/w3s/wallets?to=2020-06-02T12:01:00Z&pageSize=50>;
+                rel=\"next\'
+              type: string
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/wallet.GetAllWalletsResponse'
+        default:
+          description: Error response
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - bearerAuth: []
+      summary: Get all wallets owned by the authenticated user
+      tags:
+      - Wallet
+  /wallets/{id}:
+    get:
+      description: Get a wallet by its ID belonging to the entity
+      parameters:
+      - description: User token
+        in: header
+        name: X-User-Token
+        type: string
+      - description: Wallet ID
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Wallet found
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/wallet.GetWalletByIDResponse'
+        default:
+          description: Error response
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - bearerAuth: []
+      summary: Get wallet by ID
+      tags:
+      - Wallet
+    put:
+      consumes:
+      - application/json
+      description: Update the metadata of an existing wallet belonging to the entity
+      parameters:
+      - description: User token
+        in: header
+        name: X-User-Token
+        type: string
+      - description: Wallet ID
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Wallet metadata update request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/wallet.UpdateWalletMetadataRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Wallet metadata updated
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/wallet.UpdateWalletMetadataResponse'
+        default:
+          description: Error response
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - bearerAuth: []
+      summary: Update the metadata of a wallet by ID
+      tags:
+      - Wallet
+  /wallets/{id}/balances:
+    get:
+      description: Get token’s balance(native and ERC20 token) for a specific wallet
+      parameters:
+      - description: User token
+        in: header
+        name: X-User-Token
+        type: string
+      - description: Wallet ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: 'Include all tokens enums:'
+        in: query
+        name: includeAll
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/balances.ExtGetBalancesResponse'
+        default:
+          description: Error response
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - bearerAuth: []
+      summary: Get token balance for a wallet
+      tags:
+      - Wallet
+  /wallets/{id}/nfts:
+    get:
+      description: Get all NFTs currently owned by a specific wallet.
+      parameters:
+      - description: User token
+        in: header
+        name: X-User-Token
+        type: string
+      - description: Wallet ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: 'Include all NFTs, including unmonitored ones. enums:'
+        in: query
+        name: includeAll
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/GetNftsResponse'
+        default:
+          description: Error response
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - bearerAuth: []
+      summary: Get all NFTs owned by a wallet
+      tags:
+      - Wallet
+  /wallets/{id}/state:
+    put:
+      consumes:
+      - application/json
+      description: Update the state of an existing wallet belong to the entity
+      parameters:
+      - description: Wallet ID
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Wallet state update request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/wallet.UpdateWalletStateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Wallet state updated
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/wallet.UpdateWalletStateRequest'
+        default:
+          description: Error response
+          headers:
+            X-Request-Id:
+              description: 'Universally unique identifier for the request. format:
+                uuid'
+              type: string
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - bearerAuth: []
+      summary: Update the state of a Wallet by ID
+      tags:
+      - Wallet
+schemes:
+- https
+securityDefinitions:
+  bearerAuth:
+    description: 'Authorization: Bearer ${YOUR_API_KEY}".'
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

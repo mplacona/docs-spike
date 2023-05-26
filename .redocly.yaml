@@ -1,0 +1,31 @@
+# organization: circle_web3_services
+
+# See https://redocly.com/docs/cli/configuration/ for help.
+
+extends:
+  - recommended
+
+apis:
+  pw:
+    root: ./static/api/pw-swagger-may.yaml
+    rules:
+      no-ambiguous-paths: error
+    theme:
+      mockServer:
+        hideLogo: true
+  # external@v1:
+  #   root: ./openapi/external.yaml
+  #   labels:
+  #     - external
+  #   theme:
+  #     openapi:
+  #       hideLogo: true
+
+theme:
+  openapi:
+    schemaExpansionLevel: 2
+    generateCodeSamples:
+      languages:
+        - lang: curl
+        - lang: Python
+        - lang: Javascript
