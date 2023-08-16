@@ -24,7 +24,7 @@ const config = {
   // Adding these based on docs: https://docusaurus.io/docs/deployment#deploying-to-github-pages
   trailingSlash: false,
 
-// Apparently, these can't go here. Not going to add them to a customFields dictionary just yet.
+  // Apparently, these can't go here. Not going to add them to a customFields dictionary just yet.
   // USE_SSH: true,
   // GIT_PASS: true,
 
@@ -51,13 +51,7 @@ const config = {
           editUrl:
             'https://github.com/jheron-circle/docs-spike',
         },
-        blog: {
-          showReadingTime: true,
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/jheron-circle/docs-spike',
-        },
+        blog: false,
         theme: {
           customCss: require.resolve('./src/css/custom-circle.css'),
         },
@@ -101,42 +95,42 @@ const config = {
           src: 'img/circle-logo.png',
         },
         items: [
-        {
-          type: 'docSidebar',
-          sidebarId: 'tutorialSidebar',
-          position: 'left',
-          label: 'Guides',
-        },
-        {
-          type: 'dropdown',
-          label: 'APIs',
-          position: 'right',
-          items: [
-                    { 
-                      label: 'Programmable Wallets',
-                      to: '/api/web3s/programmable-wallets/',
-                    },
-                    { 
-                      label: 'Circle Pets',
-                      to: '/api/pets/'
-                    }
-                  ]
-        }
-                ]
-  
-          // {
-          //   href: 'https://github.com/facebook/docusaurus',
-          //   label: 'GitHub',
-          //   position: 'right',
-          // },
+          {
+            type: 'docSidebar',
+            sidebarId: 'tutorialSidebar',
+            position: 'left',
+            label: 'Guides',
+          },
+          {
+            type: 'dropdown',
+            label: 'APIs',
+            position: 'right',
+            items: [
+              {
+                label: 'Programmable Wallets',
+                to: '/api/web3s/programmable-wallets/',
+              },
+              {
+                label: 'Circle Pets',
+                to: '/api/pets/'
+              }
+            ]
+          }
+        ]
+
+        // {
+        //   href: 'https://github.com/facebook/docusaurus',
+        //   label: 'GitHub',
+        //   position: 'right',
+        // },
       },
       footer: {
         style: 'dark',
         links: [
-        {
-          title: 'Docs',
-          items: [
           {
+            title: 'Docs',
+            items: [
+              {
                 label: 'Tutorial',
                 to: '/docs/intro',
               },
