@@ -1,3 +1,5 @@
+[![Netlify Status](https://api.netlify.com/api/v1/badges/bf7deb0b-79d8-4a78-a0da-6ec4fe2aa9e9/deploy-status)](https://app.netlify.com/sites/circle-docs/deploys)
+
 # docs-spike
 
 Spiking on Docusaurus for Programmable Wallets. Using this repo to test deployment.
