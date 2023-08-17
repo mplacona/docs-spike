@@ -11,7 +11,7 @@ const config = {
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
-  url: 'https://jheron-circle.github.io',
+  url: 'https://circle-docs.netlify.app',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/docs-spike/',
@@ -150,19 +150,6 @@ const config = {
               {
                 label: 'Twitter',
                 href: 'https://twitter.com/BuildOnCircle',
-              },
-            ],
-          },
-          {
-            title: 'More',
-            items: [
-              {
-                label: 'Blog',
-                to: '/blog',
-              },
-              {
-                label: 'GitHub',
-                href: 'https://github.com/circlefin',
               },
             ],
           },
