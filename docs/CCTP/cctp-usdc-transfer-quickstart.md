@@ -15,19 +15,19 @@ The script has 5 steps:
 
 1. In this first step, you initiate a transfer of USDC from one blockchain to another, and specify the recipient wallet address on the destination chain. This step approves ETH **TokenMessenger** contract to withdraw USDC from the provided eth address.
 
-```javascript
+```js
 const approveTx = await usdcEthContract.methods.approve(ETH_TOKEN_MESSENGER_CONTRACT_ADDRESS, amount).send({gas: approveTxGas})
 ```
 
 2. In this second step, you facilitate a burn of the specified amount of USDC on the source chain. This step executes **depositForBurn** function on the ETH TokenMessenger contract deployed in [Goerli testnet](https://goerli.etherscan.io/address/0xd0c3da58f55358142b8d3e06c1c30c5c6114efe8).
 
-```javascript
+```js
 const burnTx = await ethTokenMessengerContract.methods.depositForBurn(amount, AVAX_DESTINATION_DOMAIN, destinationAddressInBytes32, USDC_ETH_CONTRACT_ADDRESS).send();
 ```
 
 3. In this third step, you make sure you have the correct message and hash it. This step extracts **messageBytes** emitted by **MessageSent** event from **depositForBurn** transaction logs and hashes the retrieved **messageBytes** using the **keccak256** hashing algorithm.
 
-```javascript
+```js
 const transactionReceipt = await web3.eth.getTransactionReceipt(burnTx.transactionHash);
 const eventTopic = web3.utils.keccak256('MessageSent(bytes)')
 const log = transactionReceipt.logs.find((l) => l.topics[0] === eventTopic)
@@ -37,7 +37,7 @@ const messageHash = web3.utils.keccak256(messageBytes);
 
 4. In this fourth step, you request the attestation from Circle, which provides authorization to mint the specified amount of USDC on the destination chain. This step polls the attestation service to acquire the signature using the **messageHash** from the previous step.
 
-```javascript
+```js
 let attestationResponse = {status: 'pending'};
 while(attestationResponse.status != 'complete') {
     const response = await fetch(`https://iris-api-sandbox.circle.com/attestations/${messageHash}`);
@@ -50,6 +50,6 @@ while(attestationResponse.status != 'complete') {
 
 Note: The attestation service is rate-limited. Please limit your requests to less than 10 per second.
 
-```javascript
+```js
 const receiveTx = await avaxMessageTransmitterContract.receiveMessage(receivingMessageBytes, signature);
 ```
