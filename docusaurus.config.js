@@ -104,6 +104,23 @@ const config = {
         sidebarPath: require.resolve('./sidebars.js'),
       },
     ],
+    [
+      '@docusaurus/plugin-client-redirects',
+      {
+        redirects: [
+          // /docs/oldDoc -> /docs/newDoc
+          {
+            to: '/stablecoins/overview',
+            from: '/stablecoins/docs',
+          },
+          // Redirect from multiple old paths to the new path
+          {
+            to: '/circle-research/overview',
+            from: '/circle-research/docs',
+          },
+        ],
+      },
+    ],
   ],
 
   themeConfig:

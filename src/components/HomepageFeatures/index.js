@@ -12,7 +12,7 @@ const FeatureList = [
       </>
     ),
     link: {
-      href: '/cctp/cctp-getting-started',
+      href: '/stablecoins/overview',
       label: 'Documentation',
     },
   },
