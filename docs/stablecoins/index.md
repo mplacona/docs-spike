@@ -1,11 +1,11 @@
 ---
-title: "CCTP"
-slug: "cctp-getting-started"
+title: "Overview"
+slug: "overview"
 excerpt: "Learn how CCTP helps unify liquidity across blockchains and simplify user experience."
 hidden: false
 createdAt: "2022-09-16T19:55:19.306Z"
 updatedAt: "2023-06-27T03:27:10.998Z"
-sidebar_position: 1
+sidebar_position: 0
 ---
 _Cross-Chain Transfer Protocol (CCTP) is a permissionless on-chain utility that can burn native USDC on a source chain and mint native USDC of the same amount on a destination chain. Developers can embed CCTP into their apps to provide users with the most capital-efficient way to transfer USDC across chains, setting the stage for a united and mainstream Web3._
 

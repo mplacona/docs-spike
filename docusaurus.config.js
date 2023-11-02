@@ -1,13 +1,13 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
-const lightCodeTheme = require('prism-react-renderer/themes/github');
-const darkCodeTheme = require('prism-react-renderer/themes/dracula');
+const lightCodeTheme = require('prism-react-renderer/themes/vsLight');
+const darkCodeTheme = require('prism-react-renderer/themes/vsDark');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'Circle Web3 Services',
-  tagline: 'Programmable Wallets ßeta',
+  title: 'Circle Docs',
+  tagline: 'Build with Circle’s Guides & APIs',
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
@@ -45,7 +45,9 @@ const config = {
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
-          sidebarPath: require.resolve('./sidebars.js'),
+          path: 'docs/common',
+          routeBasePath: 'docs',
+          sidebarPath: require.resolve('./commonsidebar.js'),
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
@@ -83,82 +85,116 @@ const config = {
     ],
   ],
 
+  plugins: [
+    [
+      '@docusaurus/plugin-content-docs',
+      {
+        id: 'stablecoins',
+        path: 'docs/stablecoins',
+        routeBasePath: 'stablecoins',
+        sidebarPath: require.resolve('./sidebars.js'),
+      },
+    ],
+    [
+      '@docusaurus/plugin-content-docs',
+      {
+        id: 'circle-research',
+        path: 'docs/circle-research',
+        routeBasePath: 'circle-research',
+        sidebarPath: require.resolve('./sidebars.js'),
+      },
+    ],
+  ],
+
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       // Replace with your project's social card
       image: 'img/circle-logo.jpg',
       navbar: {
-        title: 'Developer Documentation',
         logo: {
           alt: 'Developer Documentation',
           src: 'img/circle-logo.png',
         },
         items: [
           {
-            type: 'docSidebar',
-            sidebarId: 'tutorialSidebar',
+            label: 'Stablecoins',
             position: 'left',
-            label: 'Guides',
+            type: 'doc',
+            docId: 'index',
+            docsPluginId: 'stablecoins',
           },
           {
-            type: 'dropdown',
-            label: 'APIs',
-            position: 'right',
-            items: [
-              {
-                label: 'Programmable Wallets',
-                to: '/api/web3s/programmable-wallets/',
-              },
-              {
-                label: 'Circle Pets',
-                to: '/api/pets/'
-              }
-            ]
-          }
-        ]
-
-        // {
-        //   href: 'https://github.com/facebook/docusaurus',
-        //   label: 'GitHub',
-        //   position: 'right',
-        // },
-      },
-      footer: {
-        style: 'dark',
-        links: [
-          {
-            title: 'Docs',
-            items: [
-              {
-                label: 'Tutorial',
-                to: '/docs/intro',
-              },
-            ],
+            label: 'Web3 Services',
+            position: 'left',
+            to: '/',
           },
           {
-            title: 'Community',
-            items: [
-              {
-                label: 'Circle',
-                href: 'https://www.circle.com',
-              },
-              {
-                label: 'Discord',
-                href: 'https://discordapp.com',
-              },
-              {
-                label: 'Twitter',
-                href: 'https://twitter.com/BuildOnCircle',
-              },
-            ],
+            label: 'Circle Mint',
+            position: 'left',
+            to: '/',
+          },
+          {
+            label: 'Circle Research',
+            position: 'left',
+            type: 'doc',
+            docId: 'index',
+            docsPluginId: 'circle-research',
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} Web3 Services - Programmable Wallets ßeta`,
       },
+      // footer: {
+      //   // logo: {
+      //   //   alt: 'Circle Logo',
+      //   //   src: 'img/circle-logo.png',
+      //   //   href: 'https://circle.com'
+      //   // },
+      //   style: 'dark',
+      //   links: [
+      //     {
+      //       title: 'Docs',
+      //       items: [
+      //         {
+      //           label: 'Tutorial',
+      //           to: '/docs/index',
+      //         },
+      //       ],
+      //     },
+      //     {
+      //       title: 'Community',
+      //       items: [
+      //         {
+      //           label: 'Circle',
+      //           href: 'https://www.circle.com',
+      //         },
+      //         {
+      //           label: 'Discord',
+      //           href: 'https://discordapp.com',
+      //         },
+      //         {
+      //           label: 'Twitter',
+      //           href: 'https://twitter.com/BuildOnCircle',
+      //         },
+      //       ],
+      //     },
+      //   ],
+      //   copyright: `© ${new Date().getFullYear()} Circle Internet Financial Limited`,
+      // },
       prism: {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
+        additionalLanguages: ['powershell'],
+        magicComments: [
+          {
+            className: 'theme-code-block-highlighted-line',
+            line: 'highlight-next-line',
+            block: { start: 'highlight-start', end: 'highlight-end' },
+          },
+          {
+            className: 'code-block-error-line',
+            line: 'This will error',
+          },
+        ],
       },
     }),
 };

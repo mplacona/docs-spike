@@ -4,38 +4,62 @@ import styles from './styles.module.css';
 
 const FeatureList = [
   {
-    title: 'Easy to Use',
-    Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
+    title: 'Stablecoins',
+    Svg: require('@site/static/img/multichain-gumdrop.svg').default,
     description: (
       <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
+        Explore how to use USDC and EURC to enable a faster, safer, and more efficient way to send, spend, and exchange money around the globe. Circle stablecoins power apps to provide anytime-access to payments and financial services. Tap into Cross-Chain Transfer Protocol (CCTP), a permissionless and capital efficient on-chain utility to move USDC across chains by native burning and minting – unifying liquidity across the ecosystem and simplifying user experience.
       </>
     ),
+    link: {
+      href: '/cctp/cctp-getting-started',
+      label: 'Documentation',
+    },
   },
   {
-    title: 'Focus on What Matters',
-    Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
+    title: 'Web3 Services',
+    Svg: require('@site/static/img/code-gumdrop.svg').default,
     description: (
       <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
+        Embed secure, fully functional Web3 wallets using APIs and SDKs. Enable familiar UX and gas-less transaction experiences with Programmable Wallets and support on-chain interactions with Smart Contract Platform to import, deploy, and manage smart contracts.
       </>
     ),
+    link: {
+      href: '/',
+      label: 'Documentation',
+    },
+
   },
   {
-    title: 'Powered by React',
-    Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
+    title: 'Circle Mint',
+    Svg: require('@site/static/img/transaction-gumdrop.svg').default,
     description: (
       <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
+        Directly mint and redeem USDC and EURC at scale from your connected bank account using Circle’s web UI or API integration. Manage funds securely and seamlessly distribute them to crypto wallets around the world, 24/7.
       </>
     ),
+    link: {
+      href: '/',
+      label: 'Documentation',
+    },
+  },
+
+  {
+    title: 'Circle Research',
+    Svg: require('@site/static/img/identity-gumdrop.svg').default,
+    description: (
+      <>
+        Circle Research aims to accelerate and amplify technical innovation within the crypto industry by developing technical, open-source research with direct applications. Projects published by Circle Research are committed to public good and open-source contributions to push the boundaries of technology used in crypto, blockchain, and Web3.
+      </>
+    ),
+    link: {
+      href: '/circle-research/overview',
+      label: 'Documentation',
+    },
   },
 ];
 
-function Feature({Svg, title, description}) {
+function Feature({ Svg, title, description, link }) {
   return (
     <div className={clsx('col col--4')}>
       <div className="text--center">
@@ -44,6 +68,13 @@ function Feature({Svg, title, description}) {
       <div className="text--center padding-horiz--md">
         <h3>{title}</h3>
         <p>{description}</p>
+      </div>
+      <div className={clsx('text--center card__footer padding-horiz--md')}>
+        {link && link.href && link.href.length > 0 && (
+          <a href={link.href} className="button button--primary margin-horiz--xs">
+            {link.label}
+          </a>
+        )}
       </div>
     </div>
   );
