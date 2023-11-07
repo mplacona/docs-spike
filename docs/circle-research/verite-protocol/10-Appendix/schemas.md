@@ -114,7 +114,7 @@ When used as inputs by verifiers into verification registries, the auditing/fore
   - Other "registry" information stored by verifiers when deciding which issuer VCs to accept
 - Lastly, auditor contacts the issuer(s) for subject data corresponding to the VC id.
 
-[See further discussion of registry forensics flows](doc:smart-contract-patterns#auditing-and-forensics-sequences)
+[See further discussion of registry forensics flows](patterns/smart-contract-patterns.mdsmart-contract-patterns#auditing-and-forensics-sequences)
 
 ## Address Ownership
 

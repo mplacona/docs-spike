@@ -11,7 +11,7 @@ Circle Research is committed to open-source principles, making our leading resea
 
 ## Verite Protocol
 
-Verite is a collection of standardized protocols for decentralized identity that can help make it safer, easier and more efficient to do business across the transformative world of DeFi and Web3 commerce. Jump into our [Verite Protocol Introduction](doc:verite-protocol-introduction) to learn more.
+Verite is a collection of standardized protocols for decentralized identity that can help make it safer, easier and more efficient to do business across the transformative world of DeFi and Web3 commerce. Jump into our [Verite Protocol Introduction](verite-protocol/verite-protocol-introduction) to learn more.
 
 ## Perimeter Protocol
 

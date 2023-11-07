@@ -5,6 +5,7 @@ hidden: false
 createdAt: "2023-10-24T01:32:17.997Z"
 updatedAt: "2023-10-26T18:19:13.824Z"
 sidebar_position: 1
+collapsed: false
 ---
 ## Decentralized Identity for the Crypto Economy
 

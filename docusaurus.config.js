@@ -1,8 +1,9 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
-const lightCodeTheme = require('prism-react-renderer/themes/vsLight');
-const darkCodeTheme = require('prism-react-renderer/themes/vsDark');
+const { themes } = require('prism-react-renderer');
+const lightTheme = themes.github;
+const darkTheme = themes.dracula;
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -101,7 +102,8 @@ const config = {
         id: 'circle-research',
         path: 'docs/circle-research',
         routeBasePath: 'circle-research',
-        sidebarPath: require.resolve('./sidebars.js'),
+        sidebarPath: require.resolve('./circleResearchSidebar.js'),
+        sidebarCollapsible: true,
       },
     ],
     [
@@ -198,8 +200,8 @@ const config = {
       //   copyright: `© ${new Date().getFullYear()} Circle Internet Financial Limited`,
       // },
       prism: {
-        theme: lightCodeTheme,
-        darkTheme: darkCodeTheme,
+        theme: lightTheme,
+        darkTheme: darkTheme,
         additionalLanguages: ['powershell'],
         magicComments: [
           {

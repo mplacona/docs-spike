@@ -6,6 +6,7 @@ createdAt: "2023-10-24T01:32:18.016Z"
 updatedAt: "2023-10-25T23:59:19.383Z"
 sidebar_position: 9
 ---
+# Getting Started
 Verite has provided several interactive demos as well as sample projects to showcase some use-cases of the Verite standards. The code is freely available on [Github](https://github.com/circlefin/verite). To run all of the demos, you will need code found in two repositories: `verite` and `demo-wallet`.
 
 1. Setup and run Verite's [verite](https://github.com/circlefin/verite/blob/main/README.md)
