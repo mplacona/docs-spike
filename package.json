@@ -19,6 +19,7 @@
     "@docusaurus/plugin-client-redirects": "^3.0.0",
     "@docusaurus/plugin-content-docs": "^3.0.0",
     "@docusaurus/preset-classic": "3.0.0",
+    "@easyops-cn/docusaurus-search-local": "^0.36.0",
     "@mdx-js/react": "^1.6.22",
     "clsx": "^1.2.1",
     "prism-react-renderer": "^2.1.0",
@@ -29,6 +30,10 @@
   "devDependencies": {
     "@docusaurus/module-type-aliases": "3.0.0",
     "markdownlint": "^0.31.1"
+  },
+  "overrides": {
+    "@docusaurus/core": "3.0.0",
+    "@docusaurus/theme-common": "3.0.0"
   },
   "browserslist": {
     "production": [

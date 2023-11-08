@@ -84,6 +84,7 @@ const config = {
         },
       },
     ],
+
   ],
 
   plugins: [
@@ -122,6 +123,19 @@ const config = {
           },
         ],
       },
+    ],
+  ],
+
+  themes: [
+    [
+      require.resolve("@easyops-cn/docusaurus-search-local"),
+      {
+        indexDocs: true,
+        indexBlog: false,
+        indexPages: true,
+        language: "en",
+        hashed: true
+      }
     ],
   ],
 
